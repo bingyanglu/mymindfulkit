@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+
+  /* 预加载关键字体 */
+  @font-face {
+    font-family: 'Inter';
+    font-display: swap;
+    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  }
+  
+  /* 优化滚动性能 */
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  /* 减少重绘和重排 */
+  html {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 优化动画性能 */
+  .animate-spin {
+    will-change: transform;
+  }
+  
+  /* 优化图片加载 */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations for ADHD-friendly UI */
+@keyframes pulse-gentle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.pulse-gentle {
+  animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Focus indicators for accessibility */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+}
+
+/* Smooth transitions for reduced motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 确认对话框动画 */
+@keyframes zoom-in-95 {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in-95;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
+/* 脉动效果用于紧急提示 */
+@keyframes pulse-urgent {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.pulse-urgent {
+  animation: pulse-urgent 1s ease-in-out infinite;
+}
+
+/* 确认按钮悬停效果 */
+.confirmation-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.confirmation-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+@layer components {
+  /* 优化按钮点击性能 */
+  .btn-optimized {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  
+  /* 优化卡片阴影性能 */
+  .card-shadow {
+    will-change: box-shadow;
+  }
+  
+  /* 优化进度条动画 */
+  .progress-animated {
+    will-change: width;
+  }
+}
+
+@layer utilities {
+  /* 性能优化工具类 */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  .reduce-motion {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 深色模式优化 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
