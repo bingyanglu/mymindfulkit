@@ -42,7 +42,7 @@ export default function Home() {
                       text-[#706C69] dark:text-[#9CA3AF]">
             We build calm, clear, and effective digital tools to help neurodivergent minds navigate the noise, manage focus, and do their best work.
           </p>
-          <Link href="#featured" 
+          <Link href="/tools/dual-task-pomodoro" 
                 className="primary-button bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA]
                           text-white font-bold py-5 px-9 rounded-xl
                           shadow-[0_4px_15px_rgba(26,188,156,0.2)] dark:shadow-[0_4px_15px_rgba(79,70,229,0.2)]
