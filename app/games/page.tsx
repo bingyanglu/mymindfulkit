@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Layout } from '../components/Layout'
+import Image from 'next/image'
 
 // Reusable component for Philosophy items
 const PhilosophyItem = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
@@ -42,7 +43,7 @@ const GameCard = ({ tag, title, description, buttonText, buttonHref, isFeatured 
   if (isFeatured) {
     return (
       <div className={`${cardClasses} md:col-span-full grid md:grid-cols-2 items-center gap-12 !p-0`}>
-        <div className="p-8 md:p-12 bg-[#F0F2F5] dark:bg-[#111827] flex items-center justify-center h-full">
+        <div className="p-4 md:p-6 bg-[#F0F2F5] dark:bg-[#111827] flex items-center justify-center h-full">
           {image}
         </div>
         <div className="p-8 md:p-12 flex flex-col">
@@ -134,7 +135,26 @@ export default function GamesPage() {
               description="A classic cognitive challenge to boost your working memory. The task is simple: identify if the current stimulus matches the one from 'N' steps ago. A powerful mental workout."
               buttonText="Start Training"
               buttonHref="/games/n-back-game"
-              image={<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-gray-400 dark:text-gray-600"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>}
+              image={
+                <>
+                  <Image
+                    src="/images/n-back-tarining.png"
+                    alt="N-Back Training"
+                    width={360}
+                    height={240}
+                    className="w-full h-auto object-contain rounded-2xl shadow-lg block dark:hidden"
+                    priority
+                  />
+                  <Image
+                    src="/images/n-nack-training-dark.png"
+                    alt="N-Back Training Dark"
+                    width={360}
+                    height={240}
+                    className="w-full h-auto object-contain rounded-2xl shadow-lg hidden dark:block"
+                    priority
+                  />
+                </>
+              }
             />
             <GameCard
               comingSoon={true}
