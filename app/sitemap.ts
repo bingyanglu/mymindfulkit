@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { getAllPostSlugs, getSortedPostsData } from '@/lib/posts'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mymindfulkit.com';
 
@@ -48,6 +49,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: `${siteUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/about`,
       lastModified: new Date(),
       changeFrequency: 'yearly' as const,
@@ -67,5 +74,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return mainRoutes;
+  // 动态生成博客文章路由
+  const blogPosts = getSortedPostsData().map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  return [...mainRoutes, ...blogPosts];
 } 

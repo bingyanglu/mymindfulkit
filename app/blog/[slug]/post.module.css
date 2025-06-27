@@ -1,0 +1,157 @@
+/* app/blog/[slug]/post.module.css */
+.article {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 0;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #3A3532;
+}
+
+.meta {
+  margin-top: 16px;
+  color: #706C69;
+}
+
+.content {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #3A3532;
+}
+
+.content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 48px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #EAE8E3;
+  padding-bottom: 16px;
+  color: #3A3532;
+}
+
+.content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  color: #3A3532;
+}
+
+.content p {
+  margin-bottom: 24px;
+}
+
+.content a {
+  color: #1ABC9C;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid rgba(26, 188, 156, 0.2);
+}
+
+.content a:hover {
+  border-bottom-color: #1ABC9C;
+}
+
+.content blockquote {
+  border-left: 4px solid #1ABC9C;
+  padding-left: 24px;
+  margin: 32px 0;
+  font-style: italic;
+  font-size: 1.25rem;
+  background-color: rgba(26, 188, 156, 0.05);
+  padding: 16px 24px;
+  border-radius: 0 8px 8px 0;
+}
+
+.content ul, .content ol {
+  margin-bottom: 24px;
+  padding-left: 24px;
+}
+
+.content li {
+  margin-bottom: 8px;
+}
+
+.content code {
+  background-color: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.content pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+.content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 24px 0;
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+
+.content th, .content td {
+  border: 1px solid #EAE8E3;
+  padding: 12px;
+  text-align: left;
+}
+
+.content th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .header h1 {
+    color: #E5E7EB;
+  }
+  
+  .content {
+    color: #E5E7EB;
+  }
+  
+  .content h2, .content h3 {
+    color: #E5E7EB;
+  }
+  
+  .content code {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+  
+  .content th {
+    background-color: #374151;
+  }
+  
+  .content th, .content td {
+    border-color: #4B5563;
+  }
+} 

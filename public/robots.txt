@@ -19,7 +19,7 @@ Allow: /ai-prompts/
 Sitemap: https://mymindfulkit.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
-Crawl-delay: 1
+Crawl-delay: 1 
 
 # Additional directives for better SEO
 # Host directive (optional but recommended)

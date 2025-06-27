@@ -201,7 +201,7 @@ export function PomodoroClient() {
                   }
                 />
               </div>
-
+              
               {/* 新增：切换番茄数量设置 */}
               {settings.dualTaskMode && (
                 <div className="flex items-center justify-between mt-4">
