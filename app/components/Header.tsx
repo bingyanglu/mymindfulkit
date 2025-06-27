@@ -41,7 +41,9 @@ export function Header() {
             AI Prompts
           </Link>
           <a href="#" className="font-medium text-[#A8A5A2] dark:text-[#6b7280] cursor-not-allowed">Resources</a>
-          <a href="#" className="font-medium text-[#A8A5A2] dark:text-[#6b7280] cursor-not-allowed">Blog</a>
+          <Link href="/blog" className={`font-medium transition-colors ${pathname === '/blog' ? 'text-[#1ABC9C] dark:text-[#4F46E5]' : 'text-[#706C69] dark:text-[#9CA3AF] hover:text-[#3A3532] dark:hover:text-white'}`}>
+            Blog
+          </Link>
           <Link href="/about" className="font-bold text-[#3A3532] dark:text-[#E5E7EB] hover:text-[#1ABC9C] dark:hover:text-[#4F46E5] transition-colors ml-2"><strong>About</strong></Link>
         </nav>
 
@@ -103,13 +105,13 @@ export function Header() {
             >
               Resources
             </a>
-            <a 
-              href="#" 
+            <Link 
+              href="/blog" 
               className="font-medium text-[#706C69] dark:text-[#9CA3AF] hover:text-[#1ABC9C] dark:hover:text-[#E5E7EB] transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Blog
-            </a>
+            </Link>
             <Link 
               href="/about" 
               className="font-bold text-[#3A3532] dark:text-[#E5E7EB] hover:text-[#1ABC9C] dark:hover:text-[#4F46E5] transition-colors"
