@@ -42,6 +42,7 @@ export function Header() {
           </Link>
           <a href="#" className="font-medium text-[#A8A5A2] dark:text-[#6b7280] cursor-not-allowed">Resources</a>
           <a href="#" className="font-medium text-[#A8A5A2] dark:text-[#6b7280] cursor-not-allowed">Blog</a>
+          <Link href="/about" className="font-bold text-[#3A3532] dark:text-[#E5E7EB] hover:text-[#1ABC9C] dark:hover:text-[#4F46E5] transition-colors ml-2"><strong>About</strong></Link>
         </nav>
 
         <div className="flex items-center">
@@ -109,6 +110,13 @@ export function Header() {
             >
               Blog
             </a>
+            <Link 
+              href="/about" 
+              className="font-bold text-[#3A3532] dark:text-[#E5E7EB] hover:text-[#1ABC9C] dark:hover:text-[#4F46E5] transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <strong>About</strong>
+            </Link>
           </nav>
         </div>
       )}

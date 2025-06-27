@@ -201,6 +201,29 @@ export function PomodoroClient() {
                   }
                 />
               </div>
+
+              {/* 新增：切换番茄数量设置 */}
+              {settings.dualTaskMode && (
+                <div className="flex items-center justify-between mt-4">
+                  <Label className="text-[#3A3532] dark:text-white">Switch After</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={1}
+                      max={10}
+                      value={settings.switchAfterPomodoros}
+                      onChange={e =>
+                        updateSettings({
+                          ...settings,
+                          switchAfterPomodoros: Math.max(1, Math.min(10, Number(e.target.value))),
+                        })
+                      }
+                      className="w-16 text-center"
+                    />
+                    <span className="text-[#706C69] dark:text-gray-400 text-sm">Pomodoros</span>
+                  </div>
+                </div>
+              )}
               
               <Separator className="my-4 bg-[#EAE8E3] dark:bg-gray-700" />
               

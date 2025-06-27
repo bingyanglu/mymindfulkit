@@ -117,6 +117,9 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
   const [totalDuration, setTotalDuration] = useState(25 * 60) // 当前番茄钟的总时长
   const [wasHiddenTime, setWasHiddenTime] = useState<number | null>(null)
 
+  // 新增：用于记录当前已完成的番茄钟数（用于切换任务）
+  const [pomodorosSinceSwitch, setPomodorosSinceSwitch] = useState(0)
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
@@ -367,23 +370,21 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
     }
   }, [settings.soundEnabled, settings.vibrationEnabled, settings.notificationEnabled, isBreak, currentTaskType, getCurrentTaskInfo])
 
-  // 在proceedToNextPhase函数中，当完成工作番茄钟时添加时间记录
+  // 在proceedToNextPhase函数中，修正双任务切换逻辑
   const proceedToNextPhase = useCallback(() => {
     if (currentSessionStart) {
       const { taskAName, taskBName } = getCurrentTaskInfo()
       let currentTaskTitle: string
 
       if (!settings.dualTaskMode) {
-        // 单任务模式：总是使用第一个任务
         currentTaskTitle = taskAName
       } else {
-        // 双任务模式：根据当前任务类型选择
         currentTaskTitle = currentTaskType === "A" ? taskAName : taskBName
       }
 
       const newSession: PomodoroSession = {
         date: new Date().toISOString().split("T")[0],
-        taskType: settings.dualTaskMode ? currentTaskType : "A", // 单任务模式总是记录为A
+        taskType: settings.dualTaskMode ? currentTaskType : "A",
         taskTitle: currentTaskTitle,
         startTime: currentSessionStart,
         endTime: new Date().toISOString(),
@@ -391,7 +392,6 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       }
       setSessions((prev) => [...prev, newSession])
 
-      // 如果刚完成的是工作番茄钟（不是休息），则将时间添加到对应任务
       if (!isBreak) {
         addTimeToTask(currentTaskTitle, settings.pomoDuration)
       }
@@ -399,53 +399,50 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       setCurrentSessionStart(null)
     }
 
-    // 确定下一阶段的类型和时长
     if (!isBreak) {
       // 当前是工作阶段，下一个是休息
       const isLongBreak = currentRound % 4 === 0
       const breakDuration = isLongBreak ? settings.longBreakDuration : settings.shortBreakDuration
-
       setTimeLeft(breakDuration * 60)
       setTotalDuration(breakDuration * 60)
       setIsBreak(true)
       setCurrentRound((prev) => prev + 1)
+      // 休息前，增加计数
+      if (settings.dualTaskMode) {
+        setPomodorosSinceSwitch((prev) => prev + 1)
+      }
     } else {
       // 当前是休息阶段，下一个是工作
-      // 只有在双任务模式下才需要切换任务类型
       if (settings.dualTaskMode) {
-        const shouldSwitchTask =
-          Math.floor((currentRound - 1) / 2) % settings.switchAfterPomodoros === settings.switchAfterPomodoros - 1
-        if (shouldSwitchTask && (currentRound - 1) % 2 === 1) {
+        // 每完成 switchAfterPomodoros 个番茄钟后切换任务
+        if (pomodorosSinceSwitch >= settings.switchAfterPomodoros) {
           setCurrentTaskType((prev) => (prev === "A" ? "B" : "A"))
+          setPomodorosSinceSwitch(1) // 新一轮计数
         }
       }
-
       setTimeLeft(settings.pomoDuration * 60)
       setTotalDuration(settings.pomoDuration * 60)
       setIsBreak(false)
     }
 
     setShowConfirmation(false)
-    setTimerStartTime(null) // 重置开始时间
-  }, [currentSessionStart, currentTaskType, currentRound, settings, isBreak, getCurrentTaskInfo, addTimeToTask])
+    setTimerStartTime(null)
+  }, [currentSessionStart, currentTaskType, currentRound, settings, isBreak, getCurrentTaskInfo, addTimeToTask, pomodorosSinceSwitch])
 
+  // skipBreak 也同步修正
   const skipBreak = useCallback(() => {
-    // 跳过休息，直接进入下一个工作阶段
-    // 只有在双任务模式下才需要切换任务类型
     if (settings.dualTaskMode) {
-      const shouldSwitchTask =
-        Math.floor((currentRound - 1) / 2) % settings.switchAfterPomodoros === settings.switchAfterPomodoros - 1
-      if (shouldSwitchTask && (currentRound - 1) % 2 === 1) {
+      if (pomodorosSinceSwitch >= settings.switchAfterPomodoros) {
         setCurrentTaskType((prev) => (prev === "A" ? "B" : "A"))
+        setPomodorosSinceSwitch(1)
       }
     }
-
     setTimeLeft(settings.pomoDuration * 60)
     setTotalDuration(settings.pomoDuration * 60)
     setIsBreak(false)
     setTimerStartTime(null)
-    setIsRunning(false) // 停止计时，让用户手动开始
-  }, [currentRound, settings, currentTaskType])
+    setIsRunning(false)
+  }, [settings, pomodorosSinceSwitch])
 
   // 在extendCurrentTask函数中也添加时间记录
   const extendCurrentTask = useCallback(() => {
