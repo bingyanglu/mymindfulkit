@@ -1,20 +1,30 @@
 {
-  "name": "MyMindfulKit - Focus Tools for ADHD Minds",
+  "name": "MyMindfulKit - Tools & Games for ADHD Minds",
   "short_name": "MyMindfulKit",
-  "description": "A focus tool that rotates between two tasks, built for better attention, less burnout, and gentle structure. Perfect for ADHD minds, students, and remote workers.",
+  "description": "A curated kit of digital tools, cognitive games, and resources designed to help neurodivergent minds find focus, clarity, and productivity.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F8F7F4",
   "theme_color": "#1ABC9C",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
   "lang": "en",
-  "categories": ["productivity", "education", "health"],
+  "categories": ["productivity", "education", "health", "games"],
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "16x16 32x32",
-      "type": "image/x-icon"
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
-} 
+}
