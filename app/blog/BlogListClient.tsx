@@ -174,3 +174,4 @@ export function BlogListClient({ initialPosts }: BlogListClientProps) {
     </>
   );
 }
+ 
