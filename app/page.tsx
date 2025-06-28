@@ -114,23 +114,40 @@ export default function Home() {
             Simple, effective, and beautifully designed productivity apps to help you manage focus and build routines.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <ToolCard 
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-              </svg>
-            }
+            badge="New Tool"
+            imageUrl="/images/joure.png"
+            darkImageUrl="/images/joure-dark.png"
+            imageClassName="w-full h-full object-contain rounded-2xl shadow-lg block dark:hidden"
+            darkImageClassName="w-full h-full object-contain rounded-2xl shadow-lg hidden dark:block"
+            imageContainerClassName="bg-[#F0F2F5] dark:bg-[#111827] aspect-video flex items-center justify-center p-8"
             title="Gratitude Journal"
             description="Build a positive daily habit with our free gratitude journal, designed specifically for the ADHD mind."
             buttonText="Start Journaling"
             href="/tools/gratitude-journal"
           />
           <ToolCard 
+            badge="New Tool"
+            imageUrl="/images/time-awareness.png"
+            darkImageUrl="/images/time-awareness-dark.png"
+            imageClassName="w-full h-full object-contain rounded-2xl shadow-lg block dark:hidden"
+            darkImageClassName="w-full h-full object-contain rounded-2xl shadow-lg hidden dark:block"
+            imageContainerClassName="bg-[#F0F2F5] dark:bg-[#111827] aspect-video flex items-center justify-center p-8"
+            title="ChronoGrid"
+            description="A visual tool to combat time blindness. See the passage of time as tangible dots, helping you to stay grounded and reduce anxiety."
+            buttonText="Try Now"
+            href="/tools/time-awareness"
+          />
+          <ToolCard 
+            badge="Coming Soon"
             icon={
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12,6 12,12 16,14"></polyline>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="6" cy="6" r="3"></circle>
+                <circle cx="6" cy="18" r="3"></circle>
+                <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
               </svg>
             }
             title="Task Slicer"
@@ -277,32 +294,93 @@ function ValueItem({ icon, title, description }: { icon: React.ReactNode, title:
 }
 
 // 工具卡片组件
-function ToolCard({ icon, title, description, buttonText, href, disabled = false }: { icon: React.ReactNode, title: string, description: string, buttonText: string, href: string, disabled?: boolean }) {
+function ToolCard({ 
+  icon, 
+  title, 
+  description, 
+  buttonText, 
+  href, 
+  disabled = false,
+  badge,
+  imageUrl,
+  darkImageUrl,
+  imageClassName,
+  darkImageClassName,
+  imageContainerClassName
+}: { 
+  icon?: React.ReactNode, 
+  title: string, 
+  description: string, 
+  buttonText: string, 
+  href: string, 
+  disabled?: boolean,
+  badge?: string,
+  imageUrl?: string,
+  darkImageUrl?: string,
+  imageClassName?: string,
+  darkImageClassName?: string,
+  imageContainerClassName?: string
+}) {
+  const buttonClasses = `
+    inline-block text-center 
+    font-bold py-4 px-6 rounded-[16px] 
+    transition-transform w-full
+    ${disabled 
+      ? 'bg-[#bdc3c7] dark:bg-gray-600 text-white cursor-not-allowed' 
+      : 'bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white hover:-translate-y-0.5'
+    }
+  `;
+
+  const badgeClasses = `
+    self-start text-sm font-bold rounded-full px-3 py-1 mb-4
+    ${disabled 
+      ? 'bg-[rgba(112,108,105,0.1)] text-[#706C69] dark:text-gray-400' 
+      : 'bg-[rgba(26,188,156,0.1)] text-[#1ABC9C] dark:text-[#4F46E5]'
+    }
+  `;
+
   return (
-    <div className="bg-white dark:bg-[#1F2937] border border-[#EAE8E3] dark:border-[#374151] rounded-[24px] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.05)] flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
-      <div className="icon-wrapper w-16 h-16 mx-auto mb-6 rounded-full
-                    bg-[rgba(26,188,156,0.1)] dark:bg-[rgba(79,70,229,0.1)]
-                    flex items-center justify-center
-                    text-[#1ABC9C] dark:text-[#4F46E5]">
-        {icon}
+    <div className="bg-white dark:bg-[#1F2937] border border-[#EAE8E3] dark:border-[#374151] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
+      <div className={imageUrl ? (imageContainerClassName || "bg-[#F0F2F5] dark:bg-[#111827] aspect-video relative") : "bg-[#F0F2F5] dark:bg-[#111827] aspect-video p-8 flex items-center justify-center"}>
+        {imageUrl ? (
+          <>
+            <Image
+              src={imageUrl}
+              alt={title}
+              width={360}
+              height={240}
+              className={imageClassName || "w-full h-full object-contain rounded-2xl shadow-lg block dark:hidden"}
+              priority={true}
+            />
+            {darkImageUrl && (
+              <Image
+                src={darkImageUrl}
+                alt={title}
+                width={360}
+                height={240}
+                className={darkImageClassName || "w-full h-full object-contain rounded-2xl shadow-lg hidden dark:block"}
+                priority={true}
+              />
+            )}
+          </>
+        ) : (
+          <div className="w-16 h-16 text-[#1ABC9C] dark:text-[#4F46E5]">
+            {icon}
+          </div>
+        )}
       </div>
-      <h3 className="text-[1.75rem] font-bold mb-2 text-center
-                  text-[#3A3532] dark:text-[#E5E7EB]">
-        {title}
-      </h3>
-      <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8 flex-grow text-center">
-        {description}
-      </p>
-      {disabled ? (
-        <span className="inline-block text-center bg-[#bdc3c7] dark:bg-gray-600 text-white font-bold py-4 px-6 rounded-[16px] cursor-not-allowed">
-          {buttonText}
-        </span>
-      ) : (
-        <Link href={href}
-              className="inline-block text-center bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white font-bold py-4 px-6 rounded-[16px] transition-transform hover:-translate-y-0.5">
-          {buttonText}
-        </Link>
-      )}
+      <div className="p-8 flex flex-col flex-grow">
+        {badge && <span className={badgeClasses}>{badge}</span>}
+        <h3 className="text-2xl font-bold text-[#3A3532] dark:text-[#E5E7EB] mb-2">{title}</h3>
+        <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8 flex-grow">{description}</p>
+        {disabled ? (
+          <span className={buttonClasses}>{buttonText}</span>
+        ) : (
+          <Link href={href} className={buttonClasses}>
+            {buttonText}
+          </Link>
+        )}
+      </div>
     </div>
-  )
+  );
 }

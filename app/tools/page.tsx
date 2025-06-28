@@ -81,6 +81,16 @@ export default function ToolsPage() {
               <Link href="/tools/gratitude-journal" className={primaryButtonStyles}>Start Journaling</Link>
             </div>
 
+            {/* ChronoGrid Card (Time Awareness) */}
+            <div className={toolCardStyles}>
+              <span className="self-start bg-[rgba(26,188,156,0.1)] text-[#1ABC9C] text-sm font-bold rounded-full px-3 py-1 mb-4">New Tool</span>
+              <h3 className="text-[1.75rem] font-bold text-[#3A3532] dark:text-[#E5E7EB] mb-2">ChronoGrid</h3>
+              <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8 flex-grow">
+                A visual tool to combat time blindness. See the passage of time as tangible dots, helping you to stay grounded and reduce anxiety.
+              </p>
+              <Link href="/tools/time-awareness" className={primaryButtonStyles}>Try Now</Link>
+            </div>
+
             {/* Coming Soon Cards */}
             <div className={toolCardStyles}>
               <span className="self-start bg-[rgba(112,108,105,0.1)] text-[#706C69] dark:text-gray-400 text-sm font-bold rounded-full px-3 py-1 mb-4">Coming Soon</span>
@@ -105,23 +115,6 @@ export default function ToolsPage() {
                 A collection of focus-enhancing sounds, including brown noise, white noise, and calming rain. Block out distractions and create your ideal focus environment.
               </p>
               <span className={disabledButtonStyles}>Coming Soon</span>
-            </div>
-
-            {/* 新增 Time Awareness 工具卡片 */}
-            <div className="tool-card">
-              <div className="tool-card-img bg-gradient-to-br from-[#F8F7F4] to-[#EAE8E3] dark:from-[#18181b] dark:to-[#23272e] flex items-center justify-center h-40 rounded-2xl mb-6">
-                {/* 可用 emoji 或 SVG 代表时间可视化 */}
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="24" cy="24" r="20" stroke="#1ABC9C" strokeWidth="4" fill="#F8F7F4" />
-                  <circle cx="24" cy="24" r="12" stroke="#FFC700" strokeWidth="3" fill="#FFF" />
-                  <circle cx="24" cy="24" r="4" fill="#3A3532" />
-                </svg>
-              </div>
-              <div className="tool-card-content">
-                <h3 className="text-xl font-bold mb-2 text-[#3A3532] dark:text-[#F8F7F4]">Time Awareness</h3>
-                <p className="text-[#706C69] dark:text-[#9CA3AF] mb-4">A visual tool to help you perceive the passage of time. Combat time blindness and stay grounded in the present moment with our dot-based time progress visualizer.</p>
-                <a href="/tools/time-awareness" className="inline-block px-6 py-2 rounded-lg bg-[#1ABC9C] text-white font-bold hover:bg-[#16a085] transition-colors">Try Now</a>
-              </div>
             </div>
           </div>
         </section>
