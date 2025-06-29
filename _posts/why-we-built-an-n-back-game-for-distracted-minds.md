@@ -6,7 +6,7 @@ category: "Maker Notes"
 tags: ["adhd", "memory", "n-back", "tools", "focus", "mindfulkit"]
 date: "2025-06-28"
 readTime: "5 min read"
-imageUrl: ""
+imageUrl: "/images/n-back-tarining.png"
 isFeatured: true
 ---
 

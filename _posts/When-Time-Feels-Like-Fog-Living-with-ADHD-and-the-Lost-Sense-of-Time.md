@@ -6,7 +6,7 @@ category: "Personal Essay"
 tags: ["adhd", "time blindness", "neurodiversity", "mental health", "personal essay", "mindfulkit"]
 date: "2025-06-28"
 readTime: "3 min read"
-imageUrl: ""
+imageUrl: "/images/pomodoro-screenshot.png"
 isFeatured: true
 ---
 
