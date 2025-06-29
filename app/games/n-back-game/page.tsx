@@ -43,111 +43,152 @@ export default function NBackGamePage() {
   const [showInstructions, setShowInstructions] = useState(false)
   const [accuracy, setAccuracy] = useState(0)
   const [resultAnalysis, setResultAnalysis] = useState('')
+  
+  // 新增：点击反馈状态
+  const [buttonFeedback, setButtonFeedback] = useState<'idle' | 'correct' | 'incorrect'>('idle')
 
   const gameTimerRef = useRef<NodeJS.Timeout | null>(null)
+  
+  // 使用 useRef 实时记录分数，避免 state 异步问题
+  const scoreRef = useRef({ hits: 0, falseAlarms: 0 });
 
-  // 生成随机位置
-  const generateRandomPosition = () => Math.floor(Math.random() * 9)
+  // 生成一个保证至少有一次匹配的刺激序列
+  const generateStimulusSequence = (nLevel: number, totalTrials: number): number[] => {
+    // 1. 先生成一个完全随机的序列
+    const sequence = Array.from({ length: totalTrials }, () => Math.floor(Math.random() * 9));
+
+    // 2. 检查这个随机序列里是否已经存在匹配
+    let hasMatch = false;
+    if (totalTrials > nLevel) {
+      for (let i = nLevel; i < totalTrials; i++) {
+        if (sequence[i] === sequence[i - nLevel]) {
+          hasMatch = true;
+          break;
+        }
+      }
+    }
+
+    // 3. 如果没有匹配，并且游戏轮数足够创造一个匹配，就强制插入一个
+    if (!hasMatch && totalTrials > nLevel) {
+      // 随机选择一个可以插入匹配的位置
+      const matchIndex = nLevel + Math.floor(Math.random() * (totalTrials - nLevel));
+      // 强制让这个位置的值等于它 n-back 之前的值
+      sequence[matchIndex] = sequence[matchIndex - nLevel];
+    }
+    
+    return sequence;
+  };
 
   // 处理用户输入
   const handleUserInput = () => {
+    // 防止重复点击
     if (gameState.userRespondedThisTurn) return
 
+    // 标记已响应
     setGameState(prev => ({ ...prev, userRespondedThisTurn: true }))
 
+    // 评估点击
     if (gameState.isExpectingMatch) {
-      setScore(prev => ({ ...prev, hits: prev.hits + 1 }))
+      scoreRef.current.hits += 1;
+      setButtonFeedback('correct')
     } else {
-      setScore(prev => ({ ...prev, falseAlarms: prev.falseAlarms + 1 }))
+      scoreRef.current.falseAlarms += 1;
+      setButtonFeedback('incorrect')
     }
+
+    // 重置按钮反馈
+    setTimeout(() => setButtonFeedback('idle'), 500)
   }
 
   // 开始游戏
   const startGame = () => {
+    scoreRef.current = { hits: 0, falseAlarms: 0 };
+    // 预先生成本局游戏所需的所有刺激
+    const stimulusHistory = generateStimulusSequence(gameState.nLevel, gameState.totalTrials);
+
     setGameState(prev => ({
       ...prev,
       currentTrial: 0,
-      stimulusHistory: [],
+      stimulusHistory: stimulusHistory, // 将生成的完整序列存入 state
       userRespondedThisTurn: false,
       isExpectingMatch: false,
     }))
     setScore({ hits: 0, rejections: 0, misses: 0, falseAlarms: 0 })
+    setButtonFeedback('idle')
     setCurrentScreen('training')
-    runGameLoop()
+    // 将完整序列传入游戏循环
+    runGameLoop(stimulusHistory);
   }
 
-  // 游戏循环
-  const runGameLoop = () => {
+  // 游戏核心循环 (现在只负责按顺序展示和判断)
+  const runGameLoop = (stimulusHistory: number[]) => {
     setGameState(prev => {
-      // 处理上一轮的响应
-      if (prev.currentTrial > 0 && !prev.userRespondedThisTurn) {
-        if (prev.isExpectingMatch) {
-          setScore(current => ({ ...current, misses: current.misses + 1 }))
-        } else {
-          setScore(current => ({ ...current, rejections: current.rejections + 1 }))
-        }
-      }
-
       // 检查游戏是否结束
       if (prev.currentTrial >= prev.totalTrials) {
-        endGame()
-        return prev
+        endGame(prev);
+        return prev;
       }
 
-      // 生成新的刺激
-      const newPosition = generateRandomPosition()
-      const newStimulusHistory = [...prev.stimulusHistory, newPosition]
-      const newCurrentTrial = prev.currentTrial + 1
-      
-      // 检查是否期望匹配
-      const isExpectingMatch = (newCurrentTrial > prev.nLevel) && 
-        (newStimulusHistory[newCurrentTrial - 1] === newStimulusHistory[newCurrentTrial - 1 - prev.nLevel])
+      // --- 核心逻辑开始 ---
+      const newCurrentTrial = prev.currentTrial + 1;
+      const newPosition = stimulusHistory[newCurrentTrial - 1]; // 从预生成序列中获取当前位置
 
+      // 判断是否为"匹配"回合
+      const isNowExpectingMatch = (newCurrentTrial > prev.nLevel) &&
+        (newPosition === stimulusHistory[newCurrentTrial - 1 - prev.nLevel]);
+      
       return {
         ...prev,
         currentTrial: newCurrentTrial,
-        stimulusHistory: newStimulusHistory,
+        stimulusHistory: stimulusHistory, // 确保 state 中的 history 同步
         userRespondedThisTurn: false,
-        isExpectingMatch,
-      }
-    })
+        isExpectingMatch: isNowExpectingMatch,
+      };
+    });
 
-    // 设置下一轮定时器
-    if (gameTimerRef.current) {
-      clearTimeout(gameTimerRef.current)
-    }
-    gameTimerRef.current = setTimeout(runGameLoop, 2500)
-  }
+    if (gameTimerRef.current) clearTimeout(gameTimerRef.current);
+    // 把序列传递给下一轮循环
+    gameTimerRef.current = setTimeout(() => runGameLoop(stimulusHistory), 2500);
+  };
 
-  // 结束游戏
-  const endGame = () => {
-    if (gameTimerRef.current) {
-      clearTimeout(gameTimerRef.current)
-    }
+  // 最终结果计算逻辑 (endGame)
+  const endGame = (finalGameState: GameState) => {
+    if (gameTimerRef.current) clearTimeout(gameTimerRef.current);
 
-    // 计算最终分数
-    let actualMatches = 0
-    for (let i = gameState.nLevel; i < gameState.totalTrials; i++) {
-      if (gameState.stimulusHistory[i] === gameState.stimulusHistory[i - gameState.nLevel]) {
-        actualMatches++
+    // 1. 计算总共有多少个"本应匹配"的回合
+    let actualMatches = 0;
+    for (let i = finalGameState.nLevel; i < finalGameState.totalTrials; i++) {
+      if (finalGameState.stimulusHistory[i] === finalGameState.stimulusHistory[i - finalGameState.nLevel]) {
+        actualMatches++;
       }
     }
+
+    // 2. 计算最终的"错过匹配数"
+    const finalMisses = actualMatches - scoreRef.current.hits;
+
+    // 3. 计算总共有多少个"不应匹配"的回合
+    const totalScorableTrials = finalGameState.totalTrials - finalGameState.nLevel;
+    const totalNonMatches = totalScorableTrials - actualMatches;
+
+    // 4. 计算"正确忽略数"
+    const correctRejections = totalNonMatches - scoreRef.current.falseAlarms;
+    
+    // 5. 计算最终的准确率
+    const totalCorrectActions = scoreRef.current.hits + correctRejections;
+    const finalAccuracy = totalScorableTrials > 0 ? Math.round((totalCorrectActions / totalScorableTrials) * 100) : 0;
 
     const finalScore = {
-      ...score,
-      misses: actualMatches - score.hits,
-      rejections: (gameState.totalTrials - gameState.nLevel) - actualMatches - score.falseAlarms,
-    }
-
-    const totalScorableTrials = Math.max(0, gameState.totalTrials - gameState.nLevel)
-    const totalCorrect = finalScore.hits + finalScore.rejections
-    const finalAccuracy = totalScorableTrials > 0 ? Math.round((totalCorrect / totalScorableTrials) * 100) : 0
-
-    setScore(finalScore)
-    setAccuracy(finalAccuracy)
-    setResultAnalysis(getResultAnalysis(finalAccuracy))
-    setCurrentScreen('results')
-  }
+      hits: scoreRef.current.hits,
+      misses: finalMisses,
+      falseAlarms: scoreRef.current.falseAlarms,
+      rejections: correctRejections,
+    };
+    
+    setScore(finalScore);
+    setAccuracy(finalAccuracy);
+    setResultAnalysis(getResultAnalysis(finalAccuracy));
+    setCurrentScreen('results');
+  };
 
   // 获取结果分析
   const getResultAnalysis = (accuracy: number) => {
@@ -330,9 +371,21 @@ export default function NBackGamePage() {
 
             <button 
               onClick={handleUserInput}
-              className="w-full bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white font-bold py-6 px-8 rounded-[16px] shadow-[0_4px_15px_rgba(26,188,156,0.2)] dark:shadow-[0_4px_15px_rgba(79,70,229,0.2)] hover:shadow-[0_7px_20px_rgba(26,188,156,0.3)] dark:hover:shadow-[0_7px_20px_rgba(79,70,229,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+              disabled={gameState.userRespondedThisTurn || buttonFeedback !== 'idle'}
+              className={`w-full font-bold py-6 px-8 rounded-[16px] transition-all duration-200 ${
+                buttonFeedback === 'idle' 
+                  ? 'bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white shadow-[0_4px_15px_rgba(26,188,156,0.2)] dark:shadow-[0_4px_15px_rgba(79,70,229,0.2)] hover:shadow-[0_7px_20px_rgba(26,188,156,0.3)] dark:hover:shadow-[0_7px_20px_rgba(79,70,229,0.3)] hover:-translate-y-0.5' :
+                buttonFeedback === 'correct'
+                  ? 'bg-[#27AE60] text-white shadow-[0_4px_15px_rgba(39,174,96,0.3)] scale-95' :
+                buttonFeedback === 'incorrect'
+                  ? 'bg-[#E74C3C] text-white shadow-[0_4px_15px_rgba(231,76,60,0.3)] scale-95' :
+                'bg-[#95A5A6] text-white cursor-not-allowed opacity-75'
+              }`}
             >
-              Match (Spacebar)
+              {buttonFeedback === 'correct' ? '✅ Correct!' :
+               buttonFeedback === 'incorrect' ? '❌ Wrong!' :
+               gameState.userRespondedThisTurn ? 'Already Responded' :
+               'Match (Spacebar)'}
             </button>
           </div>
         )}
