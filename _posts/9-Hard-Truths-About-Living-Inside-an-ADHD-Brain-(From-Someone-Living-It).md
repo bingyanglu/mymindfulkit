@@ -1,6 +1,6 @@
 ---
 title: "9 Hard Truths About Living Inside an ADHD Brain (From Someone Living It)"
-excerpt: "This isn’t a diagnosis checklist. It’s what it actually feels like when your brain runs on different rules, written by someone who lives it."
+excerpt: "This isn’t a diagnosis checklist. It’s what it actually feels like when your brain runs on different rules, written by someone who lives it"
 author: "Evan Zhou"
 category: "Reflections"
 tags: ["adhd", "neurodiversity", "mental health", "self-awareness", "executive function"]
