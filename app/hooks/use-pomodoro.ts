@@ -86,8 +86,8 @@ const sendNotification = (title: string, options?: NotificationOptions) => {
   try {
     console.log("准备发送通知:", title, options)
     const notification = new Notification(title, {
-      icon: "/favicon.ico",
-      badge: "/favicon.ico",
+      icon: "/favicon.svg",
+      badge: "/favicon.svg",
       tag: "pomodoro-notification",
       requireInteraction: false,
       silent: false,

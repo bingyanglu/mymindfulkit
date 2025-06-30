@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTheme } from '../hooks/use-theme'
 import { Moon, Sun, Menu, X } from 'lucide-react'
 import { useState } from 'react'
@@ -25,8 +26,17 @@ export function Header() {
                       border-[#EAE8E3] dark:border-[#374151]">
       <div className="container max-w-7xl mx-auto px-6 flex justify-between items-center">
         <div className="flex-1 flex justify-start items-center">
-          <Link href="/" className="logo text-xl md:text-2xl font-extrabold text-[#3A3532] dark:text-[#E5E7EB]">
-            MyMindfulKit
+          <Link href="/" className="flex items-center space-x-2">
+            <Image 
+              src="/images/logo.svg" 
+              alt="MyMindfulKit Logo" 
+              width={32} 
+              height={32}
+              className="w-8 h-8"
+            />
+            <span className="text-xl md:text-2xl font-extrabold text-[#3A3532] dark:text-[#E5E7EB]">
+              MyMindfulKit
+            </span>
           </Link>
         </div>
         
