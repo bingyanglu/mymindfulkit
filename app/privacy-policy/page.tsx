@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "Read the Privacy Policy for MyMindfulKit. We are committed to protecting your privacy and being transparent about how we handle data.",
   alternates: { canonical: "https://mymindfulkit.com/privacy-policy" },
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacyPolicyPage() {
