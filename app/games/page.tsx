@@ -157,13 +157,12 @@ export default function GamesPage() {
               }
             />
             <GameCard
-              comingSoon={true}
-              tag="Coming Soon"
-              title="Impulse Control Game"
-              description="Train your brain to pause and think before acting. This Go/No-Go task challenges you to react to specific targets while inhibiting responses to others."
-              buttonText="Coming Soon"
-              buttonHref="#"
-              icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>}
+              tag="Impulse Control"
+              title="冲动控制训练"
+              description="专为ADHD人群设计的Go/No-Go训练游戏。训练大脑在看到绿色圆形时快速反应，在其他情况下抑制冲动，提升执行功能和注意力控制。"
+              buttonText="开始训练"
+              buttonHref="/games/impulse-control-game"
+              icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="9,12 12,15 22,5"></polyline></svg>}
             />
             <GameCard
               comingSoon={true}
