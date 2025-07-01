@@ -61,8 +61,8 @@ Impulse control is the ability to "think before you act." Improving it means few
 Sustained attention is the ability to focus on a single, often monotonous or repetitive, task for a prolonged period.
 
 * **[Our Innovation] Featured: MyMindfulKit's Dual-Task Pomodoro Timer**
-    * **What is it?** We've "gamified" the classic Pomodoro Technique. During your 25-minute focus block, in addition to your main task, a simple, slow-moving shape appears on screen that requires your peripheral awareness.
-    * **Why it works:** It transforms the passive act of "staying focused" into an active, gently challenging "dual-task," effectively combating mind-wandering and making the focus session itself more engaging.
+    * **What is it?** A smart Pomodoro timer that helps you alternate between two different tasks during your focus sessions. You can set it to switch between Task A and Task B every few Pomodoros, or disable dual-task mode for traditional single-task focus.
+    * **Why it works:** For ADHD brains that get bored easily, switching between two tasks prevents mental fatigue and maintains engagement. The timer includes customizable settings, task tracking, progress statistics, and both visual and audio notifications to keep you on track.
     * **[Sharpen Your Focus →](https://www.mymindfulkit.com/tools/dual-task-pomodoro)**
 
 ### Part 3: How to Play: Building a Sustainable Brain-Training Habit
