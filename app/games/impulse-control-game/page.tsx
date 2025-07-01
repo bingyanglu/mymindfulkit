@@ -588,6 +588,16 @@ export default function ImpulseControlGamePage() {
           </div>
         </div>
 
+        {/* Train Your Brain's "Brakes" Section */}
+        <div className="bg-white dark:bg-[#1F2937] border-t border-[#EAE8E3] dark:border-[#374151]">
+          <div className="container max-w-4xl mx-auto px-6 py-16">
+            <h2 className="text-3xl font-bold text-center mb-12 text-[#3A3532] dark:text-[#E5E7EB]">Train Your Brain's "Brakes"</h2>
+            <p className="text-lg text-center text-[#706C69] dark:text-[#9CA3AF] max-w-3xl mx-auto mb-12">
+              Inhibitory control, or impulse control, is a core part of our brain's executive functions. It's the "brake" pedal that allows us to pause and think. The Go/No-Go game is a scientifically-backed method to directly train and strengthen this crucial mental muscle.
+            </p>
+          </div>
+        </div>
+
         {/* SEO Content Section */}
         <div className="bg-white dark:bg-[#1F2937] border-t border-[#EAE8E3] dark:border-[#374151]">
           <div className="container max-w-4xl mx-auto px-6 py-16">
@@ -669,17 +679,17 @@ export default function ImpulseControlGamePage() {
               </section>
 
               {/* FAQ Section */}
-              <section>
+              <section className="mb-8" itemScope itemType="https://schema.org/FAQPage">
                 <div className="flex items-center mb-8">
                   <div className="w-12 h-12 bg-[#9B59B6] rounded-xl flex items-center justify-center mr-4">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">FAQ</h2>
+                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">Frequently Asked Questions</h2>
                 </div>
                 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {[
                     {
                       question: "What is the goal of this game?",
@@ -698,10 +708,15 @@ export default function ImpulseControlGamePage() {
                       answer: "Level 1 shows only one shape at a time, training basic Go/No-Go responses. Level 2 displays multiple shapes simultaneously, greatly increasing visual search difficulty and training selective attention and inhibitory control in complex environments."
                     }
                   ].map((faq, index) => (
-                    <div key={index} className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl p-6 border-l-4 border-[#1ABC9C] dark:border-[#4F46E5]">
-                      <h3 className="text-lg font-semibold mb-3 text-[#3A3532] dark:text-[#E5E7EB]">{faq.question}</h3>
-                      <p className="text-[#706C69] dark:text-[#9CA3AF] leading-relaxed">{faq.answer}</p>
-                    </div>
+                    <details key={index} className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl border-l-4 border-[#1ABC9C] dark:border-[#4F46E5] overflow-hidden" itemScope itemProp="mainEntity" itemType="https://schema.org/Question">
+                      <summary className="text-lg font-semibold p-6 text-[#3A3532] dark:text-[#E5E7EB] cursor-pointer hover:bg-[#EAE8E3] dark:hover:bg-[#374151] transition-colors">
+                        <h3 itemProp="name" className="inline">{faq.question}</h3>
+                        <span className="float-right transition-transform duration-200">▼</span>
+                      </summary>
+                      <div className="px-6 pb-6 text-[#706C69] dark:text-[#9CA3AF] leading-relaxed" itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                        <p itemProp="text">{faq.answer}</p>
+                      </div>
+                    </details>
                   ))}
                 </div>
               </section>

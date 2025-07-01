@@ -199,14 +199,14 @@ export default function Home() {
           <div className="bg-white dark:bg-[#1F2937] border border-[#EAE8E3] dark:border-[#374151] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
             <div className="bg-[#F0F2F5] dark:bg-[#111827] aspect-video flex items-center justify-center p-8">
               <div className="w-16 h-16 text-[#1ABC9C] dark:text-[#4F46E5]">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="9,12 12,15 22,5"></polyline></svg>
               </div>
             </div>
             <div className="p-8 flex flex-col flex-grow">
-              <span className="self-start text-sm font-bold rounded-full px-3 py-1 mb-4 bg-[rgba(112,108,105,0.1)] text-[#706C69] dark:text-gray-400">Coming Soon</span>
-              <h3 className="text-2xl font-bold text-[#3A3532] dark:text-[#E5E7EB] mb-2">Impulse Control Game</h3>
-              <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8 flex-grow">Train your brain to pause and think before acting. This Go/No-Go task challenges you to react to specific targets while inhibiting responses to others.</p>
-              <span className="inline-block text-center font-bold py-4 px-6 rounded-[16px] bg-[#bdc3c7] dark:bg-gray-600 text-white cursor-not-allowed">Coming Soon</span>
+              <span className="self-start bg-[rgba(26,188,156,0.1)] text-[#1ABC9C] dark:text-[#4F46E5] text-sm font-bold rounded-full px-3 py-1 mb-4">Reaction & Focus</span>
+              <h3 className="text-2xl font-bold text-[#3A3532] dark:text-[#E5E7EB] mb-2">Impulse Control Training</h3>
+              <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8 flex-grow">Can you catch the green circle and ignore the rest? Test and sharpen your reaction inhibition with this fast-paced cognitive challenge.</p>
+              <Link href="/games/impulse-control-game" className="inline-block text-center font-bold py-4 px-6 rounded-[16px] bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white transition-transform hover:-translate-y-0.5">Start Training</Link>
             </div>
           </div>
           {/* Task Switching Challenge 普通卡片样式 */}

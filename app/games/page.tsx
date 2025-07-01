@@ -157,9 +157,9 @@ export default function GamesPage() {
               }
             />
             <GameCard
-              tag="Impulse Control"
+              tag="Reaction & Focus"
               title="Impulse Control Training"
-              description="A Go/No-Go task designed for individuals with ADHD. Train your brain to react quickly to green circles while inhibiting responses to other stimuli, enhancing executive function and attention."
+              description="Can you catch the green circle and ignore the rest? Test and sharpen your reaction inhibition with this fast-paced cognitive challenge."
               buttonText="Start Training"
               buttonHref="/games/impulse-control-game"
               icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="9,12 12,15 22,5"></polyline></svg>}
