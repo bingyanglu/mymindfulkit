@@ -158,9 +158,9 @@ export default function GamesPage() {
             />
             <GameCard
               tag="Impulse Control"
-              title="冲动控制训练"
-              description="专为ADHD人群设计的Go/No-Go训练游戏。训练大脑在看到绿色圆形时快速反应，在其他情况下抑制冲动，提升执行功能和注意力控制。"
-              buttonText="开始训练"
+              title="Impulse Control Training"
+              description="A Go/No-Go task designed for individuals with ADHD. Train your brain to react quickly to green circles while inhibiting responses to other stimuli, enhancing executive function and attention."
+              buttonText="Start Training"
               buttonHref="/games/impulse-control-game"
               icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="9,12 12,15 22,5"></polyline></svg>}
             />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 
-// 游戏状态类型
+// Game State Type
 type GameState = {
   currentLevel: number
   trialsLeft: number
@@ -13,14 +13,14 @@ type GameState = {
   shouldRespond: boolean
 }
 
-// 刺激物类型
+// Stimulus Type
 type Stimulus = {
   shape: 'circle' | 'square' | 'triangle'
   color: 'green' | 'red' | 'blue' | 'yellow'
   position: { x: number; y: number }
 }
 
-// 分数类型
+// Score Type
 type Score = {
   reactionTimes: number[]
   correctActions: number
@@ -31,11 +31,11 @@ type Score = {
   correctRejections: number
 }
 
-// 反馈类型
+// Feedback Type
 type FeedbackType = 'correct' | 'incorrect' | 'miss' | null
 
 export default function ImpulseControlGamePage() {
-  // 游戏状态
+  // Game State
   const [gameState, setGameState] = useState<GameState>({
     currentLevel: 1,
     trialsLeft: 15,
@@ -61,22 +61,22 @@ export default function ImpulseControlGamePage() {
   const [isLevelUnlocked, setIsLevelUnlocked] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [focusMode, setFocusMode] = useState(false)
-  const [totalTrials, setTotalTrials] = useState(8) // 默认8轮，适合ADHD
+  const [totalTrials, setTotalTrials] = useState(8) // Default 8 trials, suitable for ADHD
 
   const gameTimerRef = useRef<NodeJS.Timeout | null>(null)
   const stimulusTimerRef = useRef<NodeJS.Timeout | null>(null)
   const trialStartTimeRef = useRef<number>(0)
   const hasRespondedRef = useRef<boolean>(false)
-  const isRunningRef = useRef<boolean>(false) // 防止重复调用
+  const isRunningRef = useRef<boolean>(false) // Prevent duplicate calls
   const currentScreenRef = useRef<'start' | 'training' | 'result'>(currentScreen)
 
-  // 生成随机位置
+  // Generate random position
   const generateRandomPosition = (): { x: number; y: number } => ({
-    x: Math.random() * 60 + 20, // 20% - 80% 的屏幕宽度
-    y: Math.random() * 40 + 30, // 30% - 70% 的屏幕高度
+    x: Math.random() * 60 + 20, // 20% - 80% of screen width
+    y: Math.random() * 40 + 30, // 30% - 70% of screen height
   })
 
-  // 生成刺激物
+  // Generate stimulus
   const generateStimulus = (isTarget: boolean = false): Stimulus => {
     if (isTarget) {
       return {
@@ -96,17 +96,17 @@ export default function ImpulseControlGamePage() {
     }
   }
 
-  // 生成一组刺激物（用于第二关）
+  // Generate a set of stimuli (for Level 2)
   const generateStimuliSet = (hasTarget: boolean): Stimulus[] => {
-    const count = Math.floor(Math.random() * 3) + 3 // 3-5个刺激物
+    const count = Math.floor(Math.random() * 3) + 3 // 3-5 stimuli
     const stimuli: Stimulus[] = []
     
-    // 如果需要目标，先添加一个绿色圆形
+    // If a target is needed, add a green circle first
     if (hasTarget) {
       stimuli.push(generateStimulus(true))
     }
     
-    // 填充其余位置
+    // Fill the remaining spots
     while (stimuli.length < count) {
       stimuli.push(generateStimulus(false))
     }
@@ -114,7 +114,7 @@ export default function ImpulseControlGamePage() {
     return stimuli
   }
 
-  // 清理所有定时器
+  // Clear all timers
   const clearAllTimers = () => {
     if (gameTimerRef.current) {
       clearTimeout(gameTimerRef.current)
@@ -127,26 +127,26 @@ export default function ImpulseControlGamePage() {
     isRunningRef.current = false
   }
 
-  // 开始新回合
+  // Start a new trial
   const startNewTrial = () => {
-    console.log(`startNewTrial被调用，当前状态: currentScreen=${currentScreenRef.current}, currentTrial=${gameState.currentTrial}, totalTrials=${totalTrials}, isRunning=${isRunningRef.current}, isPaused=${isPaused}`)
+    console.log(`startNewTrial called, current state: currentScreen=${currentScreenRef.current}, currentTrial=${gameState.currentTrial}, totalTrials=${totalTrials}, isRunning=${isRunningRef.current}, isPaused=${isPaused}`)
     
-    // 防止重复调用
+    // Prevent duplicate calls
     if (isRunningRef.current) {
-      console.log('startNewTrial已在运行，忽略调用')
+      console.log('startNewTrial is already running, ignoring call')
       return
     }
 
     if (isPaused) {
-      console.log('游戏已暂停，不开始新回合')
-      return // 如果暂停则不开始新回合
+      console.log('Game is paused, not starting new trial')
+      return // Don't start a new trial if paused
     }
 
-    // 注意：不在这里检查currentScreen，因为状态更新可能有延迟
+    // Note: Don't check currentScreen here due to potential state update delays
 
-    // 检查游戏是否应该结束
+    // Check if the game should end
     if (gameState.currentTrial >= totalTrials) {
-      console.log('游戏结束！')
+      console.log('Game over!')
       endGame()
       return
     }
@@ -156,7 +156,7 @@ export default function ImpulseControlGamePage() {
     hasRespondedRef.current = false
     setFeedback(null)
 
-    // 等待状态
+    // Waiting state
     setGameState(prev => ({
       ...prev,
       isWaiting: true,
@@ -164,51 +164,51 @@ export default function ImpulseControlGamePage() {
       currentStimuli: [],
     }))
 
-    // 随机等待时间 (1-3秒)
+    // Random wait time (1-3 seconds)
     const waitTime = Math.random() * 2000 + 1000
     
     gameTimerRef.current = setTimeout(() => {
-      // 在定时器回调中检查状态 - 使用ref获取最新值
+      // Check state in the timer callback - use ref to get the latest value
       if (currentScreenRef.current !== 'training') {
-        console.log(`定时器检查：当前屏幕为 ${currentScreenRef.current}，不是training，停止执行`)
+        console.log(`Timer check: current screen is ${currentScreenRef.current}, not training, stopping execution`)
         isRunningRef.current = false
         return
       }
       
-      console.log('定时器检查通过，继续执行游戏逻辑')
+      console.log('Timer check passed, continuing game logic')
 
-      // 根据关卡决定目标出现概率
+      // Determine target probability based on level
       let targetProbability: number
       if (gameState.currentLevel === 1) {
-        targetProbability = 0.4 // 第一关：40% 概率（入门难度）
+        targetProbability = 0.5 // Level 1: 50% probability (beginner-friendly)
       } else {
-        targetProbability = 0.6 // 第二关：60% 概率（提高训练强度）
+        targetProbability = 0.6 // Level 2: 60% probability (more intensive)
       }
       
       const shouldShowTarget = Math.random() < targetProbability
-      console.log(`关卡${gameState.currentLevel}: 目标出现概率${Math.round(targetProbability * 100)}%, 本轮${shouldShowTarget ? '有' : '无'}目标`)
+      console.log(`Level ${gameState.currentLevel}: Target probability ${Math.round(targetProbability * 100)}%, this trial ${shouldShowTarget ? 'has' : 'does not have'} a target`)
       
       let stimuli: Stimulus[]
       if (gameState.currentLevel === 1) {
-        // 第一关：单个刺激物
+        // Level 1: Single stimulus
         stimuli = [shouldShowTarget ? generateStimulus(true) : generateStimulus(false)]
       } else {
-        // 第二关：多个刺激物
+        // Level 2: Multiple stimuli
         stimuli = generateStimuliSet(shouldShowTarget)
       }
 
-      // 检查是否包含绿色圆形
+      // Check if there is a green circle
       const hasGreenCircle = stimuli.some(s => s.shape === 'circle' && s.color === 'green')
 
-              // 使用函数式更新来确保获取最新的状态
+              // Use functional update to ensure getting the latest state
         setGameState(prev => {
           const newTrialNumber = prev.currentTrial + 1
 
-          // 额外的安全检查
+          // Extra safety check
           if (newTrialNumber > totalTrials) {
-            console.log('检测到轮数超出限制，强制结束游戏')
-            setTimeout(() => endGame(), 0) // 异步调用endGame
-            return prev // 不更新状态
+            console.log('Detected trial count exceeded limit, force ending game')
+            setTimeout(() => endGame(), 0) // Async call to endGame
+            return prev // Do not update state
           }
 
         return {
@@ -224,7 +224,7 @@ export default function ImpulseControlGamePage() {
 
       trialStartTimeRef.current = Date.now()
 
-      // 2.5秒后进入下一回合
+      // 2.5 seconds later, proceed to the next trial
       stimulusTimerRef.current = setTimeout(() => {
         if (currentScreenRef.current !== 'training') {
           isRunningRef.current = false
@@ -232,7 +232,7 @@ export default function ImpulseControlGamePage() {
         }
 
         if (!hasRespondedRef.current && hasGreenCircle) {
-          // 错过了应该点击的目标
+          // Missed the target to click
           setScore(prev => ({
             ...prev,
             misses: prev.misses + 1,
@@ -240,7 +240,7 @@ export default function ImpulseControlGamePage() {
           }))
           setFeedback('miss')
         } else if (!hasRespondedRef.current && !hasGreenCircle) {
-          // 正确忽略了非目标
+          // Correctly ignored non-target
           setScore(prev => ({
             ...prev,
             correctRejections: prev.correctRejections + 1,
@@ -251,7 +251,7 @@ export default function ImpulseControlGamePage() {
 
         setTimeout(() => {
           setFeedback(null)
-          isRunningRef.current = false // 清除运行状态
+          isRunningRef.current = false // Clear running state
           if (currentScreenRef.current === 'training') {
             startNewTrial()
           }
@@ -260,7 +260,7 @@ export default function ImpulseControlGamePage() {
     }, waitTime)
   }
 
-  // 处理用户点击
+  // Handle user click
   const handleClick = () => {
     if (!gameState.isActive || hasRespondedRef.current) return
 
@@ -268,7 +268,7 @@ export default function ImpulseControlGamePage() {
     const reactionTime = Date.now() - trialStartTimeRef.current
 
     if (gameState.shouldRespond) {
-      // 正确点击
+      // Correct click
       setScore(prev => ({
         ...prev,
         hits: prev.hits + 1,
@@ -278,7 +278,7 @@ export default function ImpulseControlGamePage() {
       }))
       setFeedback('correct')
     } else {
-      // 错误点击
+      // Incorrect click
       setScore(prev => ({
         ...prev,
         falseAlarms: prev.falseAlarms + 1,
@@ -287,28 +287,28 @@ export default function ImpulseControlGamePage() {
       setFeedback('incorrect')
     }
 
-    // 清除定时器
+    // Clear timer
     if (stimulusTimerRef.current) {
       clearTimeout(stimulusTimerRef.current)
     }
 
-    // 延迟进入下一回合
+    // Delay to the next trial
     setTimeout(() => {
       setFeedback(null)
-      isRunningRef.current = false // 清除运行状态
+      isRunningRef.current = false // Clear running state
       if (currentScreenRef.current === 'training') {
         startNewTrial()
       }
     }, 500)
   }
 
-  // 开始游戏
+  // Start game
   const startGame = () => {
-    console.log(`开始游戏，总轮数设置为：${totalTrials}`)
-    
-    // 清理之前的状态
+    console.log(`Starting game, total trials set to: ${totalTrials}`)
+
+    // Clear previous state
     clearAllTimers()
-    
+
     setGameState(prev => ({
       ...prev,
       trialsLeft: totalTrials,
@@ -329,23 +329,23 @@ export default function ImpulseControlGamePage() {
     })
     setIsPaused(false)
     setFeedback(null)
-    
-    console.log('设置currentScreen为training')
+
+    console.log('Setting currentScreen to training')
     setCurrentScreen('training')
-    
+
     setTimeout(() => {
-      console.log(`500ms后调用startNewTrial`)
+      console.log(`500ms later calling startNewTrial`)
       startNewTrial()
     }, 500)
   }
 
-  // 开始第二关
+  // Start Level 2
   const startLevel2 = () => {
-    console.log(`开始第二关，总轮数设置为：${totalTrials}`)
-    
-    // 清理之前的状态
+    console.log(`Starting Level 2, total trials set to: ${totalTrials}`)
+
+    // Clear previous state
     clearAllTimers()
-    
+
     setGameState(prev => ({
       ...prev,
       currentLevel: 2,
@@ -367,25 +367,25 @@ export default function ImpulseControlGamePage() {
     })
     setIsPaused(false)
     setFeedback(null)
-    
-    console.log('设置currentScreen为training（第二关）')
+
+    console.log('Setting currentScreen to training (Level 2)')
     setCurrentScreen('training')
-    
+
     setTimeout(() => {
-      console.log(`500ms后调用startNewTrial（第二关）`)
+      console.log(`500ms later calling startNewTrial (Level 2)`)
       startNewTrial()
     }, 500)
   }
 
-  // 结束游戏
+  // End game
   const endGame = () => {
-    console.log('endGame被调用，清理定时器并显示结果')
-    clearAllTimers() // 使用统一的清理函数
+    console.log('endGame called, clearing timers and showing results')
+    clearAllTimers() // Use the unified cleanup function
 
     const accuracy = score.totalActions > 0 ? Math.round((score.correctActions / score.totalActions) * 100) : 0
-    console.log(`游戏结束，正确率：${accuracy}%`)
-    
-    // 检查是否解锁第二关
+    console.log(`Game ended, accuracy: ${accuracy}%`)
+
+    // Check if Level 2 is unlocked
     if (gameState.currentLevel === 1 && accuracy >= 80) {
       setIsLevelUnlocked(true)
     }
@@ -393,7 +393,7 @@ export default function ImpulseControlGamePage() {
     setCurrentScreen('result')
   }
 
-  // 重新开始当前关卡
+  // Restart the current level
   const restartCurrentLevel = () => {
     if (gameState.currentLevel === 1) {
       startGame()
@@ -402,7 +402,7 @@ export default function ImpulseControlGamePage() {
     }
   }
 
-  // 获取形状SVG
+  // Get shape SVG element
   const getShapeElement = (stimulus: Stimulus) => {
     const size = 60
     const colorMap = {
@@ -442,15 +442,15 @@ export default function ImpulseControlGamePage() {
     }
   }
 
-  // 获取反馈文案
+  // Get feedback text based on accuracy
   const getFeedbackText = (accuracy: number) => {
-    if (accuracy >= 95) return "快如闪电！你的抑制力非常出色！⚡️"
-    if (accuracy >= 80) return "优秀表现！你的冲动控制能力很强。✨"
-    if (accuracy >= 60) return "不错的进步！继续练习会更好。👍"
-    return "每次练习都在进步，坚持就是胜利！💪"
+    if (accuracy >= 95) return "Lightning fast! Your inhibitory control is outstanding! ⚡️"
+    if (accuracy >= 80) return "Excellent performance! Your impulse control is strong. ✨"
+    if (accuracy >= 60) return "Good progress! Keep practicing to improve further. 👍"
+    return "Every session is a step forward. Keep it up! 💪"
   }
 
-  // 键盘事件处理
+  // Keyboard event handling
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (currentScreen === 'training') {
@@ -472,58 +472,58 @@ export default function ImpulseControlGamePage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [currentScreen, isPaused])
 
-  // 暂停时清理定时器
+  // Cleanup timers on pause
   useEffect(() => {
     if (isPaused) {
       clearAllTimers()
     } else if (currentScreenRef.current === 'training' && !gameState.isActive && !gameState.isWaiting) {
-      // 从暂停恢复时，继续游戏
+      // Resume game from pause
       setTimeout(() => startNewTrial(), 100)
     }
   }, [isPaused])
 
-  // 清理定时器 - 组件卸载时
+  // Cleanup timers on component unmount
   useEffect(() => {
     return () => {
       clearAllTimers()
     }
   }, [])
 
-  // 同步currentScreen到ref，并处理屏幕变化
+  // Sync currentScreen to ref and handle screen changes
   useEffect(() => {
     const prevScreen = currentScreenRef.current
     currentScreenRef.current = currentScreen
-    
-    // 如果从training退出到其他屏幕，清理定时器
+
+    // Cleanup timers when exiting the training screen
     if (prevScreen === 'training' && currentScreen !== 'training') {
       clearAllTimers()
     }
   }, [currentScreen])
 
-  // 开始界面
+  // Start screen
   if (currentScreen === 'start') {
     return (
       <>
         <div className="min-h-screen bg-[#F8F7F4] dark:bg-[#111827] flex flex-col items-center justify-center p-6">
           <div className="w-full max-w-[480px] text-center">
             <div className="bg-white dark:bg-[#1F2937] rounded-[24px] p-8 shadow-[0_10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-[#EAE8E3] dark:border-[#374151]">
-              <h1 className="text-3xl md:text-4xl font-bold mb-6 text-[#3A3532] dark:text-[#E5E7EB]">冲动控制挑战</h1>
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 text-[#3A3532] dark:text-[#E5E7EB]">Impulse Control Challenge</h1>
               
               <div className="bg-[#F8F7F4] dark:bg-[#111827] rounded-[16px] p-6 mb-8">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-12 h-12 bg-green-500 rounded-full mr-3"></div>
-                  <span className="text-lg font-semibold text-[#3A3532] dark:text-[#E5E7EB]">绿色圆形</span>
+                  <span className="text-lg font-semibold text-[#3A3532] dark:text-[#E5E7EB]">Green Circle</span>
                 </div>
                 <p className="text-[#706C69] dark:text-[#9CA3AF] mb-4">
-                  当且仅当看到<strong>绿色圆形</strong>时，点击屏幕
+                  Click the screen only when you see the <strong>Green Circle</strong>
                 </p>
                 <p className="text-sm text-[#706C69] dark:text-[#9CA3AF]">
-                  看到其他形状或颜色时，请抑制点击的冲动
+                  When you see any other shape or color, inhibit the urge to click
                 </p>
               </div>
 
               <div className="mb-6 text-left">
-                <h3 className="text-lg font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">训练模式</h3>
+                <h3 className="text-lg font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">Training Mode</h3>
                 <div className="flex rounded-[8px] border border-[#EAE8E3] dark:border-[#374151] overflow-hidden">
                   <button
                     onClick={() => setGameState(prev => ({ ...prev, currentLevel: 1 }))}
@@ -533,7 +533,7 @@ export default function ImpulseControlGamePage() {
                         : 'bg-transparent text-[#706C69] dark:text-[#9CA3AF] hover:bg-[#F8F7F4] dark:hover:bg-[#1F2937]'
                     }`}
                   >
-                    第一关（基础）
+                    Level 1 (Basic)
                   </button>
                   <button
                     onClick={() => setGameState(prev => ({ ...prev, currentLevel: 2 }))}
@@ -543,26 +543,26 @@ export default function ImpulseControlGamePage() {
                         : 'bg-transparent text-[#706C69] dark:text-[#9CA3AF] hover:bg-[#F8F7F4] dark:hover:bg-[#1F2937]'
                     }`}
                   >
-                    第二关（进阶）
+                    Level 2 (Advanced)
                   </button>
                 </div>
               </div>
 
               <div className="mb-8 text-left">
-                <h3 className="text-lg font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">训练长度</h3>
+                <h3 className="text-lg font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">Training Length</h3>
                 <div className="flex rounded-[8px] border border-[#EAE8E3] dark:border-[#374151] overflow-hidden">
                   {[
-                    { value: 5, label: '5轮（快速）', desc: '适合初学者' },
-                    { value: 8, label: '8轮（标准）', desc: 'ADHD推荐' },
-                    { value: 12, label: '12轮（挑战）', desc: '深度训练' }
+                    { value: 5, label: '5 Rounds', desc: 'Quick Start' },
+                    { value: 8, label: '8 Rounds', desc: 'Standard' },
+                    { value: 12, label: '12 Rounds', desc: 'Challenge' }
                   ].map((option) => (
                     <button
                       key={option.value}
                       onClick={() => setTotalTrials(option.value)}
-                      className={`flex-1 py-3 px-3 border-r border-[#EAE8E3] dark:border-[#374151] last:border-r-0 transition-all duration-200 text-xs font-medium ${
+                      className={`flex-1 py-2 px-2 border-r border-[#EAE8E3] dark:border-[#374151] last:border-r-0 transition-all duration-200 text-sm font-medium ${
                         totalTrials === option.value
-                          ? 'bg-[#1ABC9C] dark:bg-[#4F46E5] text-white font-bold'
-                          : 'bg-transparent text-[#706C69] dark:text-[#9CA3AF] hover:bg-[#F8F7F4] dark:hover:bg-[#1F2937]'
+                        ? 'bg-[#1ABC9C] dark:bg-[#4F46E5] text-white font-bold'
+                        : 'bg-transparent text-[#706C69] dark:text-[#9CA3AF] hover:bg-[#F8F7F4] dark:hover:bg-[#1F2937]'
                       }`}
                     >
                       <div className="leading-tight">
@@ -576,24 +576,24 @@ export default function ImpulseControlGamePage() {
 
               <button 
                 onClick={startGame}
-                className="w-full bg-[#1ABC9C] hover:bg-[#16A085] dark:bg-[#4F46E5] dark:hover:bg-[#4338CA] text-white font-bold py-6 px-8 rounded-[16px] shadow-[0_4px_15px_rgba(26,188,156,0.2)] dark:shadow-[0_4px_15px_rgba(79,70,229,0.2)] hover:shadow-[0_7px_20px_rgba(26,188,156,0.3)] dark:hover:shadow-[0_7px_20px_rgba(79,70,229,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+                className="w-full bg-gradient-to-r from-[#1ABC9C] to-[#16A085] dark:from-[#4F46E5] dark:to-[#4338CA] text-white font-bold py-4 rounded-[12px] text-lg transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] shadow-[0_4px_20px_rgba(26,188,156,0.2)] dark:shadow-[0_4px_20px_rgba(79,70,229,0.3)]"
               >
-                开始训练
+                Start Training
               </button>
               
-              <p className="text-sm text-[#706C69] dark:text-[#9CA3AF] mt-4">
-                💡 训练时按 ESC 键可以暂停游戏
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                💡 Tip: Press ESC key to pause the game during training.
               </p>
             </div>
           </div>
         </div>
 
-        {/* SEO内容部分 */}
+        {/* SEO Content Section */}
         <div className="bg-white dark:bg-[#1F2937] border-t border-[#EAE8E3] dark:border-[#374151]">
           <div className="container max-w-4xl mx-auto px-6 py-16">
             <div className="space-y-16">
               
-              {/* 科学原理部分 */}
+              {/* Scientific Principle Section */}
               <section>
                 <div className="flex items-center mb-8">
                   <div className="w-12 h-12 bg-[#1ABC9C] dark:bg-[#4F46E5] rounded-xl flex items-center justify-center mr-4">
@@ -601,27 +601,27 @@ export default function ImpulseControlGamePage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">为何冲动控制训练对ADHD重要？</h2>
+                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">Why Is Impulse Control Training Important for ADHD?</h2>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">执行功能的核心</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">Core of Executive Function</h3>
                     <p className="text-[#706C69] dark:text-[#9CA3AF] leading-relaxed">
-                      抑制控制是执行功能的核心组成部分，它让我们能够抵制冲动、控制注意力、做出深思熟虑的决定。对于ADHD人群来说，这项能力往往较弱。
+                      Inhibitory control is a fundamental part of executive function. It enables us to resist impulses, control our attention, and make thoughtful decisions. For individuals with ADHD, this ability is often weaker.
                     </p>
                   </div>
                   
                   <div className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">科学训练方法</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">A Scientifically Proven Approach</h3>
                     <p className="text-[#706C69] dark:text-[#9CA3AF] leading-relaxed">
-                      Go/No-Go任务是认知科学中经典的训练方法，通过要求大脑在特定条件下执行或抑制反应，可以有效锻炼前额叶皮层的抑制控制功能。
+                      The Go/No-Go task is a classic method in cognitive science. By requiring the brain to act or inhibit responses under specific conditions, it effectively trains the prefrontal cortex's inhibitory control.
                     </p>
                   </div>
                 </div>
               </section>
 
-              {/* 游戏技巧部分 */}
+              {/* Training Tips Section */}
               <section>
                 <div className="flex items-center mb-8">
                   <div className="w-12 h-12 bg-[#F39C12] rounded-xl flex items-center justify-center mr-4">
@@ -629,29 +629,29 @@ export default function ImpulseControlGamePage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">训练技巧</h2>
+                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">Training Tips</h2>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     {
-                      title: "保持放松，相信直觉",
-                      description: "不要过度思考，让大脑自然地识别目标。",
+                      title: "Stay Relaxed, Trust Your Instincts",
+                      description: "Don't overthink—let your brain naturally recognize the target.",
                       icon: "🧘"
                     },
                     {
-                      title: "专注于绿色圆形",
-                      description: "在心中明确目标形象，忽略其他干扰。",
+                      title: "Focus on the Green Circle",
+                      description: "Keep the target shape in mind and ignore distractions.",
                       icon: "🎯"
                     },
                     {
-                      title: "不要试图预判",
-                      description: "只对看到的图形做出反应，避免提前准备动作。",
+                      title: "Don't Try to Predict",
+                      description: "React only to what you see; avoid preparing your response in advance.",
                       icon: "⚡"
                     },
                     {
-                      title: "错误是正常的",
-                      description: "抑制控制需要时间培养，不要因为错误而气馁。",
+                      title: "Mistakes Are Normal",
+                      description: "Inhibitory control takes time to develop. Don't get discouraged by mistakes.",
                       icon: "💪"
                     }
                   ].map((tip, index) => (
@@ -668,7 +668,7 @@ export default function ImpulseControlGamePage() {
                 </div>
               </section>
 
-              {/* FAQ部分 */}
+              {/* FAQ Section */}
               <section>
                 <div className="flex items-center mb-8">
                   <div className="w-12 h-12 bg-[#9B59B6] rounded-xl flex items-center justify-center mr-4">
@@ -676,26 +676,26 @@ export default function ImpulseControlGamePage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">常见问题</h2>
+                  <h2 className="text-3xl font-bold text-[#3A3532] dark:text-[#E5E7EB]">FAQ</h2>
                 </div>
                 
                 <div className="space-y-6">
                   {[
                     {
-                      question: "这个游戏的目标是什么？",
-                      answer: "游戏的目标是训练您的抑制控制能力。您需要学会在看到绿色圆形时快速反应，同时在看到其他形状或颜色时抑制点击的冲动，这种训练有助于改善日常生活中的冲动控制。"
+                      question: "What is the goal of this game?",
+                      answer: "The goal is to train your inhibitory control. You need to react quickly when you see a green circle, and suppress the urge to click for other shapes or colors. This helps improve impulse control in daily life."
                     },
                     {
-                      question: "为什么会有不同形状和颜色的干扰？",
-                      answer: "干扰项的存在是为了增加任务难度，模拟现实生活中的复杂环境。我们的大脑需要学会在多种刺激中快速识别目标，同时抑制对非目标刺激的反应，这种训练有助于提高选择性注意力。"
+                      question: "Why are there distractors with different shapes and colors?",
+                      answer: "Distractors increase the task's difficulty and simulate real-life complexity. Your brain learns to quickly identify targets among various stimuli and suppress responses to non-targets, improving selective attention."
                     },
                     {
-                      question: "我的反应速度慢怎么办？",
-                      answer: "反应速度因人而异，重要的是准确性而非速度。随着练习的增加，您的反应速度会自然提升。建议先专注于准确识别目标，速度会随着熟练度的提高而改善。"
+                      question: "What if my reaction speed is slow?",
+                      answer: "Reaction speed varies from person to person. Accuracy is more important than speed. With practice, your reaction time will naturally improve. Focus on identifying the target correctly first; speed will follow as you get better."
                     },
                     {
-                      question: "第二关和第一关有什么区别？",
-                      answer: "第一关每次只显示一个图形，训练基础的Go/No-Go反应。第二关会同时显示多个图形，大大增加了视觉搜索的难度，训练在复杂环境中的选择性注意力和抑制控制能力。"
+                      question: "What's the difference between Level 1 and Level 2?",
+                      answer: "Level 1 shows only one shape at a time, training basic Go/No-Go responses. Level 2 displays multiple shapes simultaneously, greatly increasing visual search difficulty and training selective attention and inhibitory control in complex environments."
                     }
                   ].map((faq, index) => (
                     <div key={index} className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl p-6 border-l-4 border-[#1ABC9C] dark:border-[#4F46E5]">
@@ -713,10 +713,10 @@ export default function ImpulseControlGamePage() {
     )
   }
 
-  // 训练界面
+  // Training screen
   if (currentScreen === 'training') {
     if (focusMode) {
-      // 专注模式 - 全屏
+      // Focus Mode - Full Screen
       return (
         <div 
           className={`fixed inset-0 z-50 transition-colors duration-300 ${
@@ -728,7 +728,7 @@ export default function ImpulseControlGamePage() {
           }`}
           onClick={!isPaused ? handleClick : undefined}
         >
-          {/* 退出和暂停按钮 */}
+          {/* Exit and Pause Buttons */}
           <div className="absolute top-4 right-4 flex gap-2 z-10">
             <button
               onClick={(e) => {
@@ -750,7 +750,7 @@ export default function ImpulseControlGamePage() {
             </button>
           </div>
 
-          {/* 进度条 */}
+          {/* Progress Bar */}
           <div className="absolute top-0 left-0 w-full h-1 bg-black bg-opacity-20">
             <div 
               className="h-full bg-white transition-all duration-300"
@@ -761,20 +761,20 @@ export default function ImpulseControlGamePage() {
           {isPaused ? (
             <div className="flex items-center justify-center min-h-screen">
               <div className="text-white text-center">
-                <h2 className="text-4xl font-bold mb-4">游戏已暂停</h2>
-                <p className="text-xl mb-8">按空格键继续，或点击按钮</p>
+                <h2 className="text-4xl font-bold mb-4">Game is Paused</h2>
+                <p className="text-xl mb-8">Press Space key to continue, or click the button</p>
                 <button
                   onClick={() => setIsPaused(false)}
                   className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-8 py-4 rounded-lg text-xl font-bold"
                 >
-                  继续游戏
+                  Resume Game
                 </button>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-center min-h-screen relative">
               {gameState.isWaiting && (
-                <div className="text-white text-4xl font-bold">准备...</div>
+                <div className="text-white text-4xl font-bold">Ready...</div>
               )}
 
               {gameState.isActive && gameState.currentStimuli.map(getShapeElement)}
@@ -790,12 +790,12 @@ export default function ImpulseControlGamePage() {
                   )}
                   {feedback === 'incorrect' && (
                     <div className="text-red-400 text-4xl font-bold animate-shake">
-                      不应该点击!
+                      Should Not Click!
                     </div>
                   )}
                   {feedback === 'miss' && (
                     <div className="text-yellow-400 text-4xl font-bold">
-                      错过了!
+                      Missed!
                     </div>
                   )}
                 </div>
@@ -805,40 +805,40 @@ export default function ImpulseControlGamePage() {
         </div>
       )
     } else {
-      // 普通模式 - 卡片布局
+      // Normal Mode - Card Layout
       return (
         <div className="min-h-screen bg-[#F8F7F4] dark:bg-[#111827] flex flex-col items-center justify-center p-6">
           <div className="w-full max-w-[600px] text-center">
             <div className="bg-white dark:bg-[#1F2937] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-[#EAE8E3] dark:border-[#374151] overflow-hidden">
               
-              {/* 头部控制区 */}
+              {/* Header Control Area */}
               <div className="p-6 border-b border-[#EAE8E3] dark:border-[#374151] flex justify-between items-center">
                 <div className="text-lg font-bold text-[#3A3532] dark:text-[#E5E7EB]">
-                  第 {gameState.currentLevel} 关 - {gameState.currentTrial} / {totalTrials}
+                  Level {gameState.currentLevel} - {gameState.currentTrial} / {totalTrials}
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsPaused(!isPaused)}
                     className="bg-[#F8F7F4] dark:bg-[#374151] text-[#3A3532] dark:text-[#E5E7EB] px-4 py-2 rounded-lg hover:bg-[#EAE8E3] dark:hover:bg-[#4B5563] transition-colors"
                   >
-                    {isPaused ? '继续' : '暂停'}
+                    {isPaused ? 'Resume' : 'Pause'}
                   </button>
                   <button
                     onClick={() => setFocusMode(true)}
                     className="bg-[#1ABC9C] dark:bg-[#4F46E5] text-white px-4 py-2 rounded-lg hover:bg-[#16A085] dark:hover:bg-[#4338CA] transition-colors"
                   >
-                    专注模式
+                    Focus Mode
                   </button>
                   <button
                     onClick={() => setCurrentScreen('start')}
                     className="bg-[#F8F7F4] dark:bg-[#374151] text-[#706C69] dark:text-[#9CA3AF] px-4 py-2 rounded-lg hover:bg-[#EAE8E3] dark:hover:bg-[#4B5563] transition-colors"
                   >
-                    退出
+                    Exit
                   </button>
                 </div>
               </div>
 
-              {/* 进度条 */}
+              {/* Progress Bar */}
               <div className="h-2 bg-[#F8F7F4] dark:bg-[#374151]">
                 <div 
                   className="h-full bg-[#1ABC9C] dark:bg-[#4F46E5] transition-all duration-300"
@@ -848,13 +848,13 @@ export default function ImpulseControlGamePage() {
 
               {isPaused ? (
                 <div className="p-12 text-center">
-                  <h2 className="text-2xl font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">游戏已暂停</h2>
-                  <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8">休息一下，准备好后继续训练</p>
+                  <h2 className="text-2xl font-bold mb-4 text-[#3A3532] dark:text-[#E5E7EB]">Game is Paused</h2>
+                  <p className="text-[#706C69] dark:text-[#9CA3AF] mb-8">Take a break, resume training when ready</p>
                   <button
                     onClick={() => setIsPaused(false)}
                     className="bg-[#1ABC9C] dark:bg-[#4F46E5] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#16A085] dark:hover:bg-[#4338CA] transition-colors"
                   >
-                    继续游戏
+                    Resume Game
                   </button>
                 </div>
               ) : (
@@ -868,7 +868,7 @@ export default function ImpulseControlGamePage() {
                 >
                   {gameState.isWaiting && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-[#3A3532] dark:text-[#E5E7EB] text-3xl font-bold">准备...</div>
+                      <div className="text-[#3A3532] dark:text-[#E5E7EB] text-3xl font-bold">Ready...</div>
                     </div>
                   )}
 
@@ -885,12 +885,12 @@ export default function ImpulseControlGamePage() {
                       )}
                       {feedback === 'incorrect' && (
                         <div className="text-red-500 text-3xl font-bold animate-shake">
-                          不应该点击!
+                          Should Not Click!
                         </div>
                       )}
                       {feedback === 'miss' && (
                         <div className="text-yellow-500 text-3xl font-bold">
-                          错过了!
+                          Missed!
                         </div>
                       )}
                     </div>
@@ -904,7 +904,7 @@ export default function ImpulseControlGamePage() {
     }
   }
 
-  // 结果界面
+  // Result screen
   if (currentScreen === 'result') {
     const accuracy = score.totalActions > 0 ? Math.round((score.correctActions / score.totalActions) * 100) : 0
     const avgReactionTime = score.reactionTimes.length > 0 
@@ -915,7 +915,7 @@ export default function ImpulseControlGamePage() {
       <div className="min-h-screen bg-[#2c3e50] flex items-center justify-center px-6">
         <div className="text-center text-white max-w-2xl">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            第 {gameState.currentLevel} 关 完成!
+            Level {gameState.currentLevel} Completed!
           </h2>
           
           <p className="text-xl md:text-2xl mb-8 opacity-90">
@@ -925,12 +925,12 @@ export default function ImpulseControlGamePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div className="bg-white bg-opacity-10 rounded-2xl p-6">
               <div className="text-3xl font-bold text-green-400">{accuracy}%</div>
-              <div className="text-sm opacity-70">正确率</div>
+              <div className="text-sm opacity-70">Accuracy</div>
             </div>
             {avgReactionTime > 0 && (
               <div className="bg-white bg-opacity-10 rounded-2xl p-6">
                 <div className="text-3xl font-bold text-blue-400">{avgReactionTime}ms</div>
-                <div className="text-sm opacity-70">平均反应速度</div>
+                <div className="text-sm opacity-70">Avg. Reaction Time</div>
               </div>
             )}
           </div>
@@ -941,14 +941,14 @@ export default function ImpulseControlGamePage() {
                 onClick={startLevel2}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-colors"
               >
-                🎉 挑战第二关
+                🎉 Challenge Level 2
               </button>
             ) : (
               <button
                 onClick={restartCurrentLevel}
                 className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all"
               >
-                再玩一次本关
+                Try This Level Again
               </button>
             )}
             
@@ -956,7 +956,7 @@ export default function ImpulseControlGamePage() {
               onClick={() => setCurrentScreen('start')}
               className="w-full bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-bold py-3 px-6 rounded-2xl transition-all"
             >
-              返回设置
+              Back to Settings
             </button>
           </div>
         </div>

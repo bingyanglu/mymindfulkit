@@ -1,9 +1,20 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '冲动控制训练游戏 - Go/No-Go训练 | MyMindfulKit',
-  description: '专为ADHD和注意力不集中人群设计的冲动控制训练游戏。通过Go/No-Go任务提升反应抑制能力和选择性注意力，帮助改善执行功能。',
-  keywords: ['冲动控制训练', 'Go/No-Go游戏', 'ADHD训练', '执行功能训练', '反应抑制', '注意力训练', '认知训练游戏'],
+  title: 'Impulse Control Training (Go/No-Go Task) | MyMindfulKit',
+  description:
+    'Train and improve your impulse control online with our scientific Go/No-Go task. Designed for individuals with ADHD or anyone looking to enhance focus and reduce impulsive behavior, this tool helps you make more deliberate decisions in daily life.',
+  keywords: [
+    'impulse control training',
+    'Go/No-Go game',
+    'ADHD training',
+    'executive function training',
+    'response inhibition',
+    'attention training',
+    'cognitive training game',
+    'ADHD tools',
+    'focus exercises',
+  ],
   alternates: { canonical: '/games/impulse-control-game' },
   openGraph: {
     title: '冲动控制训练游戏 - Go/No-Go训练 | MyMindfulKit',
