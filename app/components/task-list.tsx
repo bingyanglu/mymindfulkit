@@ -215,7 +215,6 @@ function TaskItem({
           checked={task.completed}
           onCheckedChange={() => onToggle(task.id)}
           className="flex-shrink-0"
-          disabled={!isLeaf} // 只有叶子节点任务可以直接勾选
         />
 
         {/* 任务名称和时间 */}

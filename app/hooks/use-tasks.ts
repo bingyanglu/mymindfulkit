@@ -271,12 +271,30 @@ export function useTasks() {
       const toggleTaskById = (tasks: Task[]): Task[] => {
         return tasks.map(task => {
           if (task.id === id) {
-            // 只有叶子节点任务才能被直接切换状态
-            if (!isLeafTask(task)) {
-              return task // 如果不是叶子节点，不允许直接切换
+            // 允许任何任务被切换状态
+            const newStatus = !task.completed
+            
+            // 递归更新所有子任务的状态
+            const updateChildrenStatus = (children: Task[], status: boolean): Task[] => {
+              return children.map(child => ({
+                ...child,
+                completed: status,
+                completedAt: status ? new Date().toISOString() : undefined,
+                children: child.children ? updateChildrenStatus(child.children, status) : []
+              }));
+            };
+            
+            // 如果是非叶子节点，同时更新所有子任务状态
+            if (task.children && task.children.length > 0) {
+              return {
+                ...task,
+                completed: newStatus,
+                completedAt: newStatus ? new Date().toISOString() : undefined,
+                children: updateChildrenStatus(task.children, newStatus)
+              }
             }
             
-            const newStatus = !task.completed
+            // 如果是叶子节点，只更新自身
             return {
               ...task,
               completed: newStatus,
