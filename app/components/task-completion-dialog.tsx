@@ -43,7 +43,7 @@ export function TaskCompletionDialog({
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* 自动倒计时提示 */}
+          {/* Automatic countdown */}
           <div className="text-center space-y-2">
             <div className="text-sm text-muted-foreground dark:text-gray-400">
               {timeLeft} seconds until break starts automatically.
@@ -51,7 +51,7 @@ export function TaskCompletionDialog({
             <Progress value={progressPercentage} className="w-full h-2" />
           </div>
 
-          {/* 操作按钮 */}
+          {/* Action buttons */}
           <div className="grid grid-cols-1 gap-3">
             <Button onClick={onExtend} size="lg" className="bg-orange-500 hover:bg-orange-600 text-white h-14">
               <Plus className="w-5 h-5 mr-2" />
@@ -75,7 +75,7 @@ export function TaskCompletionDialog({
             </Button>
           </div>
 
-          {/* 提示信息 */}
+          {/* Tip message */}
           <div className="text-center">
             <p className="text-xs text-muted-foreground dark:text-gray-400">Take a moment to reflect or stretch during your break.</p>
           </div>

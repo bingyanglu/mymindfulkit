@@ -99,8 +99,8 @@ const sendNotification = (title: string, options?: NotificationOptions) => {
   }
 }
 
-// 在usePomodoro函数参数中添加addTimeToTask
-export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: string, minutes: number) => void) {
+// 在usePomodoro函数参数中添加focusedTaskId
+export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: string, minutes: number) => void, focusedTaskId: string | null = null) {
   const [settings, setSettings] = useState<PomodoroSettings>(defaultSettings)
   const [timeLeft, setTimeLeft] = useState(25 * 60) // seconds
   const [isRunning, setIsRunning] = useState(false)
@@ -125,6 +125,18 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
 
   // 获取当前任务信息
   const getCurrentTaskInfo = useCallback(() => {
+    // 如果有专注任务ID，优先使用该任务
+    if (focusedTaskId) {
+      const focusedTask = activeTasks.find(task => task.id === focusedTaskId);
+      if (focusedTask) {
+        return {
+          taskAName: focusedTask.title,
+          taskBName: activeTasks.find(task => task.id !== focusedTaskId)?.title || "Task B",
+          hasValidTasks: true,
+        };
+      }
+    }
+
     if (!settings.dualTaskMode) {
       // 单任务模式
       const firstTask = activeTasks[0]
@@ -144,7 +156,7 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       taskBName: taskB?.title || "Task B",
       hasValidTasks: activeTasks.length >= 2,
     }
-  }, [activeTasks, settings.dualTaskMode])
+  }, [activeTasks, settings.dualTaskMode, focusedTaskId])
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -301,7 +313,7 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       // 使用系统提示音或语音合成
       if (typeof window !== "undefined" && window.speechSynthesis) {
         console.log("使用语音合成播放声音")
-        const utterance = new SpeechSynthesisUtterance("时间到")
+        const utterance = new SpeechSynthesisUtterance("Time's up")
         utterance.volume = 0.1
         utterance.rate = 1.2
         window.speechSynthesis.speak(utterance)
@@ -342,7 +354,11 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       const { taskAName, taskBName } = getCurrentTaskInfo()
       let currentTaskTitle: string
 
-      if (!settings.dualTaskMode) {
+      if (focusedTaskId) {
+        // 如果有专注任务，使用该任务的标题
+        const focusedTask = activeTasks.find(task => task.id === focusedTaskId);
+        currentTaskTitle = focusedTask?.title || "Focus Task";
+      } else if (!settings.dualTaskMode) {
         currentTaskTitle = taskAName
       } else {
         currentTaskTitle = currentTaskType === "A" ? taskAName : taskBName
@@ -353,22 +369,22 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       if (isBreak) {
         // 休息完成通知
         console.log("发送休息完成通知")
-        sendNotification("休息时间结束！", {
-          body: "准备开始下一个番茄钟吧！",
+        sendNotification("Break Time Over!", {
+          body: "Ready to start the next pomodoro!",
           tag: "break-complete",
         })
       } else {
         // 番茄钟完成通知
         console.log("发送番茄钟完成通知")
-        sendNotification("番茄钟完成！", {
-          body: `"${currentTaskTitle}" 已完成，该休息一下了！`,
+        sendNotification("Pomodoro Complete!", {
+          body: `"${currentTaskTitle}" completed, time to take a break!`,
           tag: "pomodoro-complete",
         })
       }
     } else {
       console.log("浏览器通知已禁用")
     }
-  }, [settings.soundEnabled, settings.vibrationEnabled, settings.notificationEnabled, isBreak, currentTaskType, getCurrentTaskInfo])
+  }, [settings.soundEnabled, settings.vibrationEnabled, settings.notificationEnabled, isBreak, currentTaskType, getCurrentTaskInfo, activeTasks, focusedTaskId])
 
   // 在proceedToNextPhase函数中，修正双任务切换逻辑
   const proceedToNextPhase = useCallback(() => {
@@ -376,7 +392,11 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       const { taskAName, taskBName } = getCurrentTaskInfo()
       let currentTaskTitle: string
 
-      if (!settings.dualTaskMode) {
+      if (focusedTaskId) {
+        // 如果有专注任务，使用该任务的标题
+        const focusedTask = activeTasks.find(task => task.id === focusedTaskId);
+        currentTaskTitle = focusedTask?.title || "Focus Task";
+      } else if (!settings.dualTaskMode) {
         currentTaskTitle = taskAName
       } else {
         currentTaskTitle = currentTaskType === "A" ? taskAName : taskBName
@@ -427,7 +447,7 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
 
     setShowConfirmation(false)
     setTimerStartTime(null)
-  }, [currentSessionStart, currentTaskType, currentRound, settings, isBreak, getCurrentTaskInfo, addTimeToTask, pomodorosSinceSwitch])
+  }, [currentSessionStart, currentTaskType, currentRound, settings, isBreak, getCurrentTaskInfo, addTimeToTask, pomodorosSinceSwitch, focusedTaskId])
 
   // skipBreak 也同步修正
   const skipBreak = useCallback(() => {
@@ -451,7 +471,11 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
       const { taskAName, taskBName } = getCurrentTaskInfo()
       let currentTaskTitle: string
 
-      if (!settings.dualTaskMode) {
+      if (focusedTaskId) {
+        // 如果有专注任务，使用该任务的标题
+        const focusedTask = activeTasks.find(task => task.id === focusedTaskId);
+        currentTaskTitle = focusedTask?.title || "Focus Task";
+      } else if (!settings.dualTaskMode) {
         // 单任务模式：总是使用第一个任务
         currentTaskTitle = taskAName
       } else {
@@ -468,7 +492,7 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
     setTimerStartTime(Date.now()) // 重新设置开始时间
     setShowConfirmation(false)
     setIsRunning(true) // 自动开始延长的时间
-  }, [isBreak, currentTaskType, getCurrentTaskInfo, addTimeToTask, settings])
+  }, [isBreak, currentTaskType, getCurrentTaskInfo, addTimeToTask, settings, focusedTaskId])
 
   const confirmBreak = useCallback(() => {
     proceedToNextPhase()
@@ -581,7 +605,11 @@ export function usePomodoro(activeTasks: Task[], addTimeToTask: (taskTitle: stri
   // 修改当前任务显示逻辑
   let currentTask: string
   if (isBreak) {
-    currentTask = "休息时间"
+    currentTask = "Break Time"
+  } else if (focusedTaskId) {
+    // 如果有专注任务ID，直接使用该任务的标题
+    const focusedTask = activeTasks.find(task => task.id === focusedTaskId);
+    currentTask = focusedTask?.title || "Focus Task";
   } else if (!settings.dualTaskMode) {
     // 单任务模式：显示第一个任务或默认文本
     currentTask = taskAName

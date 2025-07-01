@@ -42,7 +42,22 @@ const LoadingSpinner = () => (
 )
 
 export function PomodoroClient() {
-  const { tasks, activeTasks, addTask, toggleTask, deleteTask, editTask, addTimeToTask, reorderTasks } = useTasks()
+  const { 
+    tasks, 
+    activeTasks, 
+    addTask, 
+    addChildTask, 
+    toggleTask, 
+    deleteTask, 
+    editTask, 
+    addTimeToTask, 
+    reorderTasks,
+    moveTask,
+    isLeafTask,
+    getNextFocusTask,
+    focusedTaskId,
+    setFocusedTaskId
+  } = useTasks()
 
   const {
     currentTask,
@@ -63,7 +78,7 @@ export function PomodoroClient() {
     confirmBreak,
     skipBreak,
     hasValidTasks,
-  } = usePomodoro(activeTasks, addTimeToTask)
+  } = usePomodoro(activeTasks, addTimeToTask, focusedTaskId)
 
   const [showStats, setShowStats] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -151,7 +166,21 @@ export function PomodoroClient() {
               A focus tool that rotates between two tasks
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex items-center gap-3">
+            {/* 双任务模式开关 - 移到外部 */}
+            <div className="flex items-center gap-2 mr-2">
+              <span className="text-sm text-[#706C69] dark:text-gray-400">Dual Task</span>
+              <Switch
+                checked={settings.dualTaskMode}
+                onCheckedChange={(checked) =>
+                  updateSettings({
+                    ...settings,
+                    dualTaskMode: checked,
+                  })
+                }
+                className="data-[state=checked]:bg-blue-500"
+              />
+            </div>
             <Button
               variant="outline"
               size="icon"
@@ -183,24 +212,7 @@ export function PomodoroClient() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* 双任务模式开关 */}
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label className="text-[#3A3532] dark:text-white">Dual Task Mode</Label>
-                  <p className="text-sm text-[#706C69] dark:text-gray-400">
-                    Rotate between two tasks for better focus and less burnout.
-                  </p>
-                </div>
-                <Switch
-                  checked={settings.dualTaskMode}
-                  onCheckedChange={(checked) =>
-                    updateSettings({
-                      ...settings,
-                      dualTaskMode: checked,
-                    })
-                  }
-                />
-              </div>
+              {/* 移除双任务模式开关，因为已经移到外面了 */}
               
               {/* 新增：切换番茄数量设置 */}
               {settings.dualTaskMode && (
@@ -422,16 +434,21 @@ export function PomodoroClient() {
                 tasks={tasks}
                 activeTasks={activeTasks}
                 onAddTask={addTask}
+                onAddChildTask={addChildTask}
                 onToggleTask={toggleTask}
                 onDeleteTask={deleteTask}
                 onEditTask={editTask}
                 onReorderTasks={reorderTasks}
+                onMoveTask={moveTask}
+                isLeafTask={isLeafTask}
+                focusedTaskId={focusedTaskId}
+                setFocusedTaskId={setFocusedTaskId}
               />
             </Suspense>
           </div>
         </div>
 
-        {/* 任务完成确认对话框 */}
+        {/* Task Completion Dialog */}
         <Suspense fallback={null}>
           <TaskCompletionDialog
             isOpen={showConfirmation}
