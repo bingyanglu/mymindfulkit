@@ -721,6 +721,15 @@ export default function ImpulseControlGamePage() {
                 </div>
               </section>
               
+              {/* Additional SEO text */}
+              <section className="mb-8">
+                <div className="bg-[#F8F7F4] dark:bg-[#111827] rounded-2xl p-6">
+                  <p className="text-[#706C69] dark:text-[#9CA3AF] text-center">
+                    This tool is part of our complete suite for improving executive functions. To learn the science behind it, read our <a href="https://www.mymindfulkit.com/blog/The-Ultimate-Guide-to-Brain-Games-for-ADHD-Scientifically-Improve-Focus-Memory" className="text-[#1ABC9C] dark:text-[#4F46E5] hover:underline font-medium">Ultimate Guide to Brain Games for ADHD</a>.
+                  </p>
+                </div>
+              </section>
+              
             </div>
           </div>
         </div>

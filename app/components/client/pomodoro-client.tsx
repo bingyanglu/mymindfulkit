@@ -731,6 +731,15 @@ export function PomodoroClient() {
               </CardContent>
             </Card>
           </div>
+          
+          {/* Additional SEO text */}
+          <div className="max-w-3xl mx-auto mt-12">
+            <div className="bg-[#F8F7F4] dark:bg-[#374151] rounded-2xl p-6 border border-[#EAE8E3] dark:border-[#4B5563]">
+              <p className="text-[#706C69] dark:text-gray-400 text-center">
+                This tool is part of our complete suite for improving executive functions. To learn the science behind it, read our <a href="https://www.mymindfulkit.com/blog/The-Ultimate-Guide-to-Brain-Games-for-ADHD-Scientifically-Improve-Focus-Memory" className="text-[#1ABC9C] dark:text-[#4F46E5] hover:underline font-medium">Ultimate Guide to Brain Games for ADHD</a>.
+              </p>
+            </div>
+          </div>
         </section>
       </div>
     </div>
